@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { 
-  User, 
-  signInWithEmailAndPassword, 
+import {
+  User,
+  signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut as firebaseSignOut,
   onAuthStateChanged,
@@ -10,19 +10,28 @@ import {
 } from 'firebase/auth';
 import { auth, isFirebaseConfigured } from '@/lib/firebase';
 
+interface AnonymousUser {
+  uid: string;
+  email: string;
+  displayName: string;
+  photoURL: string;
+  isAnonymous: true;
+}
+
 interface AuthContextType {
-  user: User | null;
+  user: User | AnonymousUser | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
+  signInAnonymously: () => Promise<void>;
   signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | AnonymousUser | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -39,30 +48,55 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return unsubscribe;
   }, []);
 
-  // COMMENTED OUT: Authentication functions disabled
-  // const signIn = async (email: string, password: string) => {
-  //   if (!auth) throw new Error('Firebase not configured');
-  //   await signInWithEmailAndPassword(auth, email, password);
-  // };
 
-  // const signUp = async (email: string, password: string) => {
-  //   if (!auth) throw new Error('Firebase not configured');
-  //   await createUserWithEmailAndPassword(auth, email, password);
-  // };
+  const signIn = async (email: string, password: string) => {
+    if (!auth) throw new Error('Firebase not configured');
+    await signInWithEmailAndPassword(auth, email, password);
+  };
 
-  // const signInWithGoogle = async () => {
-  //   if (!auth) throw new Error('Firebase not configured');
-  //   const provider = new GoogleAuthProvider();
-  //   await signInWithPopup(auth, provider);
-  // };
+  const signUp = async (email: string, password: string) => {
+    if (!auth) throw new Error('Firebase not configured');
+    await createUserWithEmailAndPassword(auth, email, password);
+  };
 
-  // const signOut = async () => {
-  //   if (!auth) throw new Error('Firebase not configured');
-  //   await firebaseSignOut(auth);
-  // };
+  const signInWithGoogle = async () => {
+    if (!auth) throw new Error('Firebase not configured');
+    const provider = new GoogleAuthProvider();
+    await signInWithPopup(auth, provider);
+  };
+
+  const signInAnonymously = async () => {
+    // Create anonymous user object
+    const anonymousUser: AnonymousUser = {
+      uid: 'anonymous_' + Date.now(),
+      email: 'unknown@anonymous.com',
+      displayName: 'Unknown User',
+      photoURL: 'https://res.cloudinary.com/dmgjftmqa/image/upload/v1760428883/unknownUser_wfly4l.png',
+      isAnonymous: true
+    };
+    setUser(anonymousUser);
+  };
+
+  const signOut = async () => {
+    if (user && 'isAnonymous' in user && user.isAnonymous) {
+      // For anonymous users, just clear the user state
+      setUser(null);
+    } else if (auth) {
+      // For Firebase users, use Firebase signOut
+      await firebaseSignOut(auth);
+    }
+  };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signIn: async () => {}, signUp: async () => {}, signInWithGoogle: async () => {}, signOut: async () => {} }}>
+    <AuthContext.Provider value={{
+      user,
+      loading,
+      signIn,
+      signUp,
+      signInWithGoogle,
+      signInAnonymously,
+      signOut
+    }}>
       {children}
     </AuthContext.Provider>
   );

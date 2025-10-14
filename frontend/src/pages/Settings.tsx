@@ -9,6 +9,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { ArrowLeft, User, Settings as SettingsIcon, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import UserProfileMenu from '@/components/UserProfileMenu';
 
 export default function Settings() {
   const navigate = useNavigate();
@@ -34,14 +35,17 @@ export default function Settings() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b bg-background">
-        <div className="container mx-auto flex h-16 items-center px-4">
-          <Button variant="ghost" size="sm" onClick={() => navigate('/dashboard')}>
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back
-          </Button>
-          <Logo className="ml-4" />
+        <div className="container mx-auto flex h-16 items-center justify-between px-4">
+          {/* Left section: Back button + Logo */}
+          <div className="flex items-center space-x-4">
+            <Logo />
+          </div>
+
+          {/* Right section: User menu */}
+          <UserProfileMenu />
         </div>
       </header>
+
 
       {/* Main Content */}
       <main className="container mx-auto max-w-3xl px-4 py-12">
@@ -67,12 +71,24 @@ export default function Settings() {
             <CardContent className="space-y-4">
               <div>
                 <Label className="text-sm text-muted-foreground">Email</Label>
-                <p className="mt-1 text-lg">{user?.email}</p>
+                <p className="mt-1 text-lg">
+                  {user && 'isAnonymous' in user && user.isAnonymous
+                    ? 'Unknown (Guest User)'
+                    : user?.email || 'Not available'}
+                </p>
               </div>
               <div>
                 <Label className="text-sm text-muted-foreground">User ID</Label>
                 <p className="mt-1 font-mono text-sm">{user?.uid}</p>
               </div>
+              {user && 'isAnonymous' in user && user.isAnonymous && (
+                <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <p className="text-sm text-yellow-800">
+                    <strong>Guest Mode:</strong> You are using the application as a guest user.
+                    Some features may be limited. Sign in with an account for full access.
+                  </p>
+                </div>
+              )}
             </CardContent>
           </Card>
 

@@ -1,23 +1,22 @@
 import axios from 'axios';
 import { auth } from './firebase';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://deep-learning-pipeline.onrender.com';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://thermofusion-f5jf.onrender.com';
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
 });
 
-// COMMENTED OUT: Authentication token logic disabled
-// apiClient.interceptors.request.use(async (config) => {
-//   if (auth) {
-//     const user = auth.currentUser;
-//     if (user) {
-//       const token = await user.getIdToken();
-//       config.headers.Authorization = `Bearer ${token}`;
-//     }
-//   }
-//   return config;
-// });
+apiClient.interceptors.request.use(async (config) => {
+  if (auth) {
+    const user = auth.currentUser;
+    if (user) {
+      const token = await user.getIdToken();
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+  }
+  return config;
+});
 
 export const api = {
   // AI Model Inference

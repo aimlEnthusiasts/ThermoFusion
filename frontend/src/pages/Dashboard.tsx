@@ -7,6 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useAuth } from '@/contexts/AuthContext';
 import { Plus, LogOut, Download, FileImage, BarChart3, Zap, ZoomIn, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import UserProfileMenu from '@/components/UserProfileMenu';
 
 interface AIResult {
   psnr: number;
@@ -31,7 +32,7 @@ export default function Dashboard() {
   const [aiResult, setAiResult] = useState<AIResult | null>(null);
   const [tifFileName, setTifFileName] = useState<string>('');
   const [showResults, setShowResults] = useState(false);
-  const [zoomedImage, setZoomedImage] = useState<{src: string, title: string} | null>(null);
+  const [zoomedImage, setZoomedImage] = useState<{ src: string, title: string } | null>(null);
 
   useEffect(() => {
     // Check if we have AI results from upload
@@ -68,11 +69,7 @@ export default function Dashboard() {
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           <Logo />
           <div className="flex items-center gap-4">
-            <span className="text-sm text-muted-foreground">{user?.email}</span>
-            <Button variant="outline" size="sm" onClick={handleSignOut}>
-              <LogOut className="mr-2 h-4 w-4" />
-              Sign Out
-            </Button>
+            <UserProfileMenu />
           </div>
         </div>
       </header>
@@ -155,7 +152,7 @@ export default function Dashboard() {
                       <BarChart3 className="h-4 w-4" />
                       Detailed Analysis Views
                     </h3>
-                    
+
                     <div className="grid gap-6 md:grid-cols-2">
                       {/* Predicted vs Ground Truth */}
                       <Card>
@@ -332,8 +329,8 @@ export default function Dashboard() {
 
                 {/* Action Buttons */}
                 <div className="flex gap-2">
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     onClick={() => {
                       const link = document.createElement('a');
                       link.href = `data:image/png;base64,${aiResult.visualization}`;
@@ -344,13 +341,13 @@ export default function Dashboard() {
                     <Download className="mr-2 h-4 w-4" />
                     Download Result
                   </Button>
-                  <Button 
-                    variant="outline" 
+                  <Button
+                    variant="outline"
                     onClick={() => setShowResults(false)}
                   >
                     Close Results
                   </Button>
-          </div>
+                </div>
               </CardContent>
             </Card>
           </motion.div>
@@ -364,7 +361,7 @@ export default function Dashboard() {
               </div>
               <h3 className="mb-2 text-xl font-bold">Ready to Process TIF Files</h3>
               <p className="mb-6 text-muted-foreground text-center max-w-md">
-                Upload your TIF file to start AI-powered thermal super-resolution processing. 
+                Upload your TIF file to start AI-powered thermal super-resolution processing.
                 Our advanced model will enhance your thermal imagery with high-quality results.
               </p>
               <Link to="/upload">
@@ -398,10 +395,10 @@ export default function Dashboard() {
                 alt={zoomedImage.title}
                 className="max-w-full h-auto"
               />
-                    </div>
-                    </div>
+            </div>
           </div>
-        )}
+        </div>
+      )}
     </div>
   );
 }
