@@ -26,7 +26,8 @@ app.add_middleware(
 )
 
 MODEL_PATH = "./ai/model.pth"
-DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+DEVICE = torch.device("cpu")
 
 print("🚀 Loading model...")
 model = PhysicsAwareUNet().to(DEVICE)
