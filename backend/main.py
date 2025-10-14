@@ -62,6 +62,12 @@ def image_to_base64(img: np.ndarray, cmap: str | None = None):
     return b64
 
 
+@app.get("/health")
+async def health_check():
+    """Health check endpoint for keeping the backend warm"""
+    return {"status": "healthy", "model_loaded": True, "device": str(DEVICE)}
+
+
 @app.post("/infer")
 async def infer(file: UploadFile = File(...)):
     try:

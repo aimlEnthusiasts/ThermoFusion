@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { LogIn, UserPlus } from 'lucide-react';
+import { LogIn, UserPlus, Zap, ArrowRight } from 'lucide-react';
 import { isFirebaseConfigured } from '@/lib/firebase';
 import Auth3dModel from "@/components/ui/Auth3DModel"
 
@@ -114,7 +114,13 @@ export default function Auth() {
           <Card className="border shadow-lg">
             <CardHeader>
               <CardTitle className="text-2xl">Welcome</CardTitle>
-              <CardDescription>Sign in to access your super-resolution workspace</CardDescription>
+              <CardDescription>
+                Sign in to access your super-resolution workspace
+                <br />
+                <span className="text-sm text-muted-foreground mt-2 block">
+                  💡 <strong>Prototype Demo:</strong> Try the quick guest access below!
+                </span>
+              </CardDescription>
             </CardHeader>
             <CardContent>
               <Tabs value={isLogin ? 'login' : 'register'} onValueChange={(v) => setIsLogin(v === 'login')}>
@@ -197,12 +203,37 @@ export default function Auth() {
                 </TabsContent>
               </Tabs>
 
+              {/* Featured Guest Access Button */}
+              <div className="my-6">
+                <motion.div
+                  initial={{ scale: 0.95, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.3, duration: 0.4 }}
+                  className="relative"
+                >
+                  <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-lg blur opacity-20 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-pulse"></div>
+                  <Button
+                    type="button"
+                    className="relative w-full bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 hover:from-blue-700 hover:via-purple-700 hover:to-pink-700 text-white font-semibold py-3 text-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
+                    onClick={handleAnonymousAuth}
+                    disabled={loading}
+                  >
+                    <Zap className="mr-3 h-5 w-5" />
+                    🚀 Quick Demo Access
+                    <ArrowRight className="ml-3 h-5 w-5" />
+                  </Button>
+                  <p className="text-xs text-center text-muted-foreground mt-2">
+                    No signup required
+                  </p>
+                </motion.div>
+              </div>
+
               <div className="relative my-6">
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-border" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
+                  <span className="bg-card px-2 text-muted-foreground">Or create an account</span>
                 </div>
               </div>
 
@@ -238,7 +269,7 @@ export default function Auth() {
                 <Button
                   type="button"
                   variant="secondary"
-                  className="w-full"
+                  className="w-full opacity-60"
                   onClick={handleAnonymousAuth}
                   disabled={loading}
                 >

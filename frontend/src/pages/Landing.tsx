@@ -352,7 +352,7 @@ export default function Landing() {
             <div>
               <h3 className="mb-4 font-bold">Connect</h3>
               <div className="flex gap-4">
-                <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+                <a href="https://github.com/aimlEnthusiasts/ThermoFusion" target="_blank" rel="noopener noreferrer">
                   <Button variant="ghost" size="icon">
                     <Github className="h-5 w-5" />
                   </Button>

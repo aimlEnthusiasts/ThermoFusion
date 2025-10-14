@@ -19,6 +19,9 @@ apiClient.interceptors.request.use(async (config) => {
 });
 
 export const api = {
+  // Health check endpoint for warming up the backend
+  healthCheck: () => apiClient.get('/health'),
+
   // AI Model Inference
   inferTif: (file: File) => {
     const formData = new FormData();
