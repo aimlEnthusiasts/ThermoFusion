@@ -119,6 +119,7 @@ def train_and_evaluate(data_path, num_epochs=40):
 
     print("Training complete. Starting evaluation...")
     model.eval()
+    
     psnr_scores, ssim_scores, rmse_scores = [], [], []
     with torch.no_grad():
         for idx, (opt_patch, th_patch) in enumerate(test_loader):
