@@ -11,6 +11,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { LogIn, UserPlus } from 'lucide-react';
 import { isFirebaseConfigured } from '@/lib/firebase';
+import Auth3dModel from "@/components/ui/Auth3DModel"
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
@@ -97,18 +98,19 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="flex min-h-screen items-center justify-start px-8 lg:px-16">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="w-full max-w-md lg:max-w-lg mr-8 lg:mr-16"
-        >
-          <div className="mb-8 text-center">
-            <Logo className="mb-4 justify-center" />
-          </div>
+    <div className="min-h-screen flex flex-col lg:flex-row bg-background">
+      {/* Left: Auth form */}
+      <div className="flex-1 flex flex-col items-center justify-center px-6 sm:px-10 lg:px-16 py-10">
+        <div className="mb-10">
+          <Logo className="mb-6 mx-auto scale-110" /> {/* Added margin + centered + slightly larger */}
+        </div>
 
+        <motion.div
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4 }}
+          className="w-full max-w-md"
+        >
           <Card className="border shadow-lg">
             <CardHeader>
               <CardTitle className="text-2xl">Welcome</CardTitle>
@@ -246,6 +248,13 @@ export default function Auth() {
             </CardContent>
           </Card>
         </motion.div>
+      </div>
+
+      {/* Right: 3D Model */}
+      <div className="hidden lg:flex flex-1 items-center justify-center bg-background/50">
+        <div className="w-full h-screen max-h-[900px]">
+          <Auth3dModel className="w-full h-full" />
+        </div>
       </div>
     </div>
   );
