@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+torch
+numpy
+rasterio
+matplotlib
+scikit-image
+python-multipart
