@@ -8,12 +8,19 @@ import { Upload, Zap, Download, Satellite, Github, CheckCircle, TrendingUp, User
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import UserProfileMenu from '@/components/UserProfileMenu';
+import { StarsBackground } from '@/components/stars';
+import { useEffect } from 'react';
 
 
 export default function Landing() {
 
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+
+  // Ensure page starts at top on mount to prevent auto-scroll issues
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const handleSignOut = async () => {
     await signOut();
@@ -58,68 +65,70 @@ export default function Landing() {
       <ScrollProgressBar />
 
       {/* Hero Section */}
-      <section className="container mx-auto px-4 py-20 md:py-32 relative overflow-hidden">
-        {/* Animated background gradient orbs */}
-        <div className="absolute top-20 left-10 w-96 h-96 bg-white/5 rounded-full blur-3xl animate-float" />
-        <div className="absolute bottom-20 right-10 w-80 h-80 bg-accent/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-center relative z-10"
-        >
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 py-2 text-sm backdrop-blur-sm shadow-lg shadow-white/10"
-          >
-            <Satellite className="h-4 w-4 text-white animate-bounce-slow" />
-            <span className="text-white/90">ISRO Super-Resolution Initiative</span>
-          </motion.div>
-
-          <motion.h1
-            className="mb-6 text-5xl font-bold md:text-7xl"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-          >
-            <span className="bg-gradient-to-r from-white via-white/90 to-accent bg-clip-text text-transparent animate-shimmer bg-[length:200%_auto]">
-              Optical-Guided
-            </span>
-            <br />
-            <span className="text-white/95">Thermal Super-Resolution</span>
-          </motion.h1>
-
-          <motion.p
-            className="mx-auto mb-12 max-w-2xl text-lg text-muted-foreground"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-          >
-            Advanced AI-powered enhancement for thermal infrared imagery using optical guidance.
-            Transform low-resolution thermal data into crystal-clear insights.
-          </motion.p>
+      <StarsBackground className="relative overflow-hidden min-h-screen">
+        <section className="container mx-auto px-4 py-20 md:py-32 relative">
+          {/* Animated background gradient orbs */}
+          <div className="absolute top-20 left-10 w-96 h-96 bg-white/5 rounded-full blur-3xl animate-float" />
+          <div className="absolute bottom-20 right-10 w-80 h-80 bg-accent/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
 
           <motion.div
-            className="flex flex-wrap justify-center gap-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.7 }}
+            transition={{ duration: 0.8 }}
+            className="text-center relative z-10"
           >
-            <Link to="/dashboard">
-              <Button size="lg" className="relative overflow-hidden group shadow-lg shadow-white/20 hover:shadow-white/30 transition-all duration-300">
-                <span className="relative z-10">Get Started</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 py-2 text-sm backdrop-blur-sm shadow-lg shadow-white/10"
+            >
+              <Satellite className="h-4 w-4 text-white animate-bounce-slow" />
+              <span className="text-white/90">ISRO Super-Resolution Initiative</span>
+            </motion.div>
+
+            <motion.h1
+              className="mb-6 text-5xl font-bold md:text-7xl"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+            >
+              <span className="bg-gradient-to-r from-white via-white/90 to-accent bg-clip-text text-transparent animate-shimmer bg-[length:200%_auto]">
+                Optical-Guided
+              </span>
+              <br />
+              <span className="text-white/95">Thermal Super-Resolution</span>
+            </motion.h1>
+
+            <motion.p
+              className="mx-auto mb-12 max-w-2xl text-lg text-muted-foreground"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.5 }}
+            >
+              Advanced AI-powered enhancement for thermal infrared imagery using optical guidance.
+              Transform low-resolution thermal data into crystal-clear insights.
+            </motion.p>
+
+            <motion.div
+              className="flex flex-wrap justify-center gap-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.7 }}
+            >
+              <Link to="/dashboard">
+                <Button size="lg" className="relative overflow-hidden group shadow-lg shadow-white/20 hover:shadow-white/30 transition-all duration-300">
+                  <span className="relative z-10">Get Started</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                </Button>
+              </Link>
+              <Button size="lg" variant="outline" className="border-white/20 hover:border-white/40 hover:shadow-lg hover:shadow-white/10 transition-all duration-300">
+                View Demo
               </Button>
-            </Link>
-            <Button size="lg" variant="outline" className="border-white/20 hover:border-white/40 hover:shadow-lg hover:shadow-white/10 transition-all duration-300">
-              View Demo
-            </Button>
+            </motion.div>
           </motion.div>
-        </motion.div>
-      </section>
+        </section>
+      </StarsBackground>
 
       {/* Features Section */}
       <section id="features" className="border-y bg-secondary/50 py-20">
