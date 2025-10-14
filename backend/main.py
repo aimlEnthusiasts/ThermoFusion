@@ -11,7 +11,9 @@ from skimage.metrics import (
     peak_signal_noise_ratio as psnr,
     structural_similarity as ssim,
 )
-from skimage.filters import sobel
+from skimage.filters import sobel, unsharp_mask
+from skimage import color, exposure
+from matplotlib import cm
 from ai.training import PhysicsAwareUNet
 
 app = FastAPI(title="Thermal SR Model API")
@@ -43,13 +45,35 @@ def fig_to_base64(fig):
     return base64.b64encode(buf.read()).decode("utf-8")
 
 
+def image_to_base64(img: np.ndarray, cmap: str | None = None):
+    """
+    Encode a 2D or 3D numpy image array as base64 PNG. If 2D, an optional matplotlib
+    colormap name can be provided.
+    """
+    fig, ax = plt.subplots(figsize=(6, 6))
+    ax.axis("off")
+    if img.ndim == 2:
+        ax.imshow(img, cmap=cmap if cmap else "gray")
+    else:
+        ax.imshow(np.clip(img, 0, 1))
+    plt.tight_layout(pad=0)
+    b64 = fig_to_base64(fig)
+    plt.close(fig)
+    return b64
+
+
 @app.post("/infer")
 async def infer(file: UploadFile = File(...)):
     try:
         with rasterio.open(file.file) as src:
             all_bands = src.read().astype(np.float32)
-            optical = all_bands[1:4] / 10000.0
-            thermal = all_bands[9:11] / 300.0
+            # Reflectance scaling for optical (OLI); simplistic normalization for thermal
+            # If data already in 0-1, skip division
+            if np.nanmax(all_bands[1:4]) <= 1.5:
+                optical = all_bands[1:4]
+            else:
+                optical = all_bands[1:4] / 10000.0  # Bands 2-4
+            thermal = all_bands[9:11] / 300.0   # Bands 10-11
 
         optical_tensor = torch.tensor(optical).unsqueeze(0).to(DEVICE)
         thermal_tensor = torch.tensor(thermal).unsqueeze(0).to(DEVICE)
@@ -197,15 +221,61 @@ async def infer(file: UploadFile = File(...)):
         visualizations["statistical_analysis"] = fig_to_base64(fig4)
         plt.close(fig4)
 
-        # Create input image preview (optical bands)
-        fig_input, ax_input = plt.subplots(1, 1, figsize=(8, 6))
-        # Use the first optical band for preview
-        ax_input.imshow(optical[0], cmap="viridis")
-        ax_input.set_title("Input Optical Image (Band 1)")
-        ax_input.axis("off")
-        plt.tight_layout()
-        input_preview_base64 = fig_to_base64(fig_input)
-        plt.close(fig_input)
+        # Build final fused output image (optical-thermal mixture)
+        # Robust per-band normalization to avoid black previews
+        def robust_rescale(band: np.ndarray) -> np.ndarray:
+            p2, p98 = np.nanpercentile(band, [2, 98])
+            if p98 - p2 < 1e-6:
+                return np.zeros_like(band)
+            return np.clip((band - p2) / (p98 - p2), 0, 1)
+
+        # True color optical RGB using bands 4-3-2 (indices 3,2,1)
+        r = robust_rescale(all_bands[3])
+        g = robust_rescale(all_bands[2])
+        b = robust_rescale(all_bands[1])
+        optical_true_rgb = np.transpose(np.stack([r, g, b], axis=0), (1, 2, 0))
+
+        # False color composite (NIR-Red-Green => Bands 5-4-3 => idx 4,3,2)
+        nir = robust_rescale(all_bands[4])
+        r_fc = robust_rescale(all_bands[3])
+        g_fc = robust_rescale(all_bands[2])
+        optical_false_rgb = np.transpose(np.stack([nir, r_fc, g_fc], axis=0), (1, 2, 0))
+
+        # Thermal RGB (pseudo color) from predicted thermal bands
+        # Compose as [Band11, mean(B10,B11), Band10]
+        thermal_mean = np.mean(pred_np, axis=0)
+        thermal_rgb = np.stack([
+            pred_np[1],
+            thermal_mean,
+            pred_np[0],
+        ], axis=0)
+        # Normalize thermal to 0..1 based on current scene range
+        tmin, tmax = np.percentile(thermal_rgb, [1, 99])
+        thermal_rgb = np.clip((thermal_rgb - tmin) / max(tmax - tmin, 1e-6), 0, 1)
+        thermal_rgb = np.transpose(thermal_rgb, (1, 2, 0))
+
+        # Enhance thermal intensity using CLAHE to preserve local contrast
+        t_lo, t_hi = np.percentile(thermal_mean, [1, 99])
+        thermal_intensity = np.clip((thermal_mean - t_lo) / max(t_hi - t_lo, 1e-6), 0, 1)
+        thermal_intensity_eq = exposure.equalize_adapthist(thermal_intensity, clip_limit=0.01)
+
+        # Blend in Lab colorspace: mix thermal intensity into luminance channel
+        optical_lab = color.rgb2lab(np.clip(optical_true_rgb, 0, 1))  # L in [0,100]
+        L = optical_lab[..., 0]
+        thermal_L = thermal_intensity_eq * 100.0
+        alpha = 0.35
+        fused_L = np.clip((1 - alpha) * L + alpha * thermal_L, 0, 100)
+        optical_lab[..., 0] = fused_L
+        fused_rgb = np.clip(color.lab2rgb(optical_lab), 0, 1)
+
+        # Light sharpening to counter any residual blur
+        fused_rgb = np.clip(unsharp_mask(fused_rgb, radius=1.2, amount=0.8, preserve_range=True), 0, 1)
+
+        # Encode previews
+        final_output_b64 = image_to_base64(fused_rgb)
+        thermal_rgb_b64 = image_to_base64(thermal_rgb)
+        optical_true_b64 = image_to_base64(optical_true_rgb)
+        optical_false_b64 = image_to_base64(optical_false_rgb)
 
         return JSONResponse(
             {
@@ -214,8 +284,11 @@ async def infer(file: UploadFile = File(...)):
                 "rmse": round(float(rmse_val), 3),
                 "confidence": round(conf, 3),
                 "visualization": main_vis_base64,
+                "final_output": final_output_b64,
                 "individual_visualizations": visualizations,
-                "input_preview": input_preview_base64,
+                "thermal_rgb": thermal_rgb_b64,
+                "optical_true_color": optical_true_b64,
+                "optical_false_color": optical_false_b64,
             }
         )
 

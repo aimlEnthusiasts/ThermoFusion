@@ -15,13 +15,17 @@ interface AIResult {
   rmse: number;
   confidence: number;
   visualization: string;
+  final_output?: string;
   individual_visualizations?: {
     predicted_vs_gt: string;
     residual_maps: string;
     edge_analysis: string;
     statistical_analysis: string;
   };
-  input_preview?: string;
+  input_preview?: string; // legacy
+  thermal_rgb?: string;
+  optical_true_color?: string;
+  optical_false_color?: string;
 }
 
 export default function Dashboard() {
@@ -108,8 +112,45 @@ export default function Dashboard() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
+                {/* Final Output */}
+                {aiResult.final_output && (
+                  <div className="space-y-4">
+                    <h3 className="font-semibold flex items-center gap-2">
+                      <FileImage className="h-4 w-4" />
+                      Final Super-Resolved Output
+                    </h3>
+                    <div className="relative group">
+                      <img
+                        src={`data:image/png;base64,${aiResult.final_output}`}
+                        alt="Final Super-Resolved Output"
+                        className="max-w-full h-auto rounded-lg border shadow-sm cursor-pointer hover:shadow-lg transition-shadow"
+                        onClick={() => zoomImage(aiResult.final_output!, "Final Super-Resolved Output")}
+                      />
+                      <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => zoomImage(aiResult.final_output!, "Final Super-Resolved Output")}
+                        >
+                          <ZoomIn className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => downloadImage(aiResult.final_output!, `${tifFileName.replace('.tif', '')}_final_output.png`)}
+                      >
+                        <Download className="mr-2 h-4 w-4" />
+                        Download Final Output
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
                 {/* Input Image Preview */}
-                {aiResult.input_preview && (
+                {aiResult.input_preview && !aiResult.optical_true_color && (
                   <div className="space-y-4">
                     <h3 className="font-semibold flex items-center gap-2">
                       <FileImage className="h-4 w-4" />
@@ -141,6 +182,116 @@ export default function Dashboard() {
                         <Download className="mr-2 h-4 w-4" />
                         Download Input Preview
                       </Button>
+                    </div>
+                  </div>
+                )}
+
+                {/* New Input Previews: Thermal RGB + Two Optical Images */}
+                {(aiResult.thermal_rgb || aiResult.optical_true_color || aiResult.optical_false_color) && (
+                  <div className="space-y-4">
+                    <h3 className="font-semibold flex items-center gap-2">
+                      <FileImage className="h-4 w-4" />
+                      Input Previews
+                    </h3>
+                    <div className="grid gap-6 md:grid-cols-3">
+                      {aiResult.thermal_rgb && (
+                        <Card>
+                          <CardHeader className="pb-3">
+                            <CardTitle className="text-lg">Thermal (Pseudo RGB)</CardTitle>
+                            <CardDescription>Composed from predicted thermal bands</CardDescription>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="relative group">
+                              <img
+                                src={`data:image/png;base64,${aiResult.thermal_rgb}`}
+                                alt="Thermal RGB"
+                                className="w-full h-auto rounded border cursor-pointer hover:shadow-lg transition-shadow"
+                                onClick={() => zoomImage(aiResult.thermal_rgb!, "Thermal (Pseudo RGB)")}
+                              />
+                              <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <Button size="sm" variant="secondary" onClick={() => zoomImage(aiResult.thermal_rgb!, "Thermal (Pseudo RGB)")}>
+                                  <ZoomIn className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </div>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="w-full mt-3"
+                              onClick={() => downloadImage(aiResult.thermal_rgb!, `${tifFileName.replace('.tif', '')}_thermal_rgb.png`)}
+                            >
+                              <Download className="mr-2 h-4 w-4" />
+                              Download
+                            </Button>
+                          </CardContent>
+                        </Card>
+                      )}
+
+                      {aiResult.optical_true_color && (
+                        <Card>
+                          <CardHeader className="pb-3">
+                            <CardTitle className="text-lg">Optical True Color</CardTitle>
+                            <CardDescription>Bands 4-3-2 (RGB)</CardDescription>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="relative group">
+                              <img
+                                src={`data:image/png;base64,${aiResult.optical_true_color}`}
+                                alt="Optical True Color"
+                                className="w-full h-auto rounded border cursor-pointer hover:shadow-lg transition-shadow"
+                                onClick={() => zoomImage(aiResult.optical_true_color!, "Optical True Color")}
+                              />
+                              <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <Button size="sm" variant="secondary" onClick={() => zoomImage(aiResult.optical_true_color!, "Optical True Color")}>
+                                  <ZoomIn className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </div>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="w-full mt-3"
+                              onClick={() => downloadImage(aiResult.optical_true_color!, `${tifFileName.replace('.tif', '')}_optical_true_color.png`)}
+                            >
+                              <Download className="mr-2 h-4 w-4" />
+                              Download
+                            </Button>
+                          </CardContent>
+                        </Card>
+                      )}
+
+                      {aiResult.optical_false_color && (
+                        <Card>
+                          <CardHeader className="pb-3">
+                            <CardTitle className="text-lg">Optical False Color</CardTitle>
+                            <CardDescription>NIR-Red-Green composite</CardDescription>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="relative group">
+                              <img
+                                src={`data:image/png;base64,${aiResult.optical_false_color}`}
+                                alt="Optical False Color"
+                                className="w-full h-auto rounded border cursor-pointer hover:shadow-lg transition-shadow"
+                                onClick={() => zoomImage(aiResult.optical_false_color!, "Optical False Color")}
+                              />
+                              <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <Button size="sm" variant="secondary" onClick={() => zoomImage(aiResult.optical_false_color!, "Optical False Color")}>
+                                  <ZoomIn className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </div>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="w-full mt-3"
+                              onClick={() => downloadImage(aiResult.optical_false_color!, `${tifFileName.replace('.tif', '')}_optical_false_color.png`)}
+                            >
+                              <Download className="mr-2 h-4 w-4" />
+                              Download
+                            </Button>
+                          </CardContent>
+                        </Card>
+                      )}
                     </div>
                   </div>
                 )}
