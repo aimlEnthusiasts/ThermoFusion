@@ -44,9 +44,9 @@ export default function About() {
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground leading-relaxed">
-                ThermoFusion Lab is part of the ISRO Super-Resolution Initiative, aimed at advancing thermal 
-                infrared imaging capabilities for Earth observation satellites. By leveraging optical guidance 
-                and state-of-the-art deep learning techniques, we enable unprecedented detail in thermal imagery, 
+                ThermoFusion is part of the ISRO Super-Resolution Initiative, aimed at advancing thermal
+                infrared imaging capabilities for Earth observation satellites. By leveraging optical guidance
+                and state-of-the-art deep learning techniques, we enable unprecedented detail in thermal imagery,
                 supporting applications in climate monitoring, agriculture, urban planning, and disaster response.
               </p>
             </CardContent>
@@ -62,11 +62,11 @@ export default function About() {
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-muted-foreground leading-relaxed">
-                Our super-resolution approach combines optical and thermal imagery through a fusion-based 
-                deep learning architecture. The optical image provides high-frequency spatial details that 
+                Our super-resolution approach combines optical and thermal imagery through a fusion-based
+                deep learning architecture. The optical image provides high-frequency spatial details that
                 guide the enhancement of the lower-resolution thermal data.
               </p>
-              
+
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="rounded-lg border border-border bg-card/50 p-4">
                   <h3 className="mb-2 font-bold">Multi-Scale Fusion</h3>
@@ -106,13 +106,13 @@ export default function About() {
             </CardHeader>
             <CardContent>
               <p className="mb-4 text-muted-foreground leading-relaxed">
-                This project is developed in collaboration with the Indian Space Research Organisation (ISRO) 
-                as part of their ongoing efforts to enhance satellite imaging capabilities. The super-resolution 
-                techniques developed here will contribute to ISRO's Earth observation missions, providing 
+                This project is developed in collaboration with the Indian Space Research Organisation (ISRO)
+                as part of their ongoing efforts to enhance satellite imaging capabilities. The super-resolution
+                techniques developed here will contribute to ISRO's Earth observation missions, providing
                 scientists and researchers with higher-quality thermal data for critical applications.
               </p>
               <p className="text-sm text-muted-foreground">
-                Special thanks to ISRO's Satellite Applications Centre and the Space Applications Centre 
+                Special thanks to ISRO's Satellite Applications Centre and the Space Applications Centre
                 for their guidance and dataset contributions.
               </p>
             </CardContent>
@@ -125,8 +125,8 @@ export default function About() {
             </CardHeader>
             <CardContent>
               <p className="text-muted-foreground">
-                This project was developed using modern web technologies including React, TypeScript, 
-                TailwindCSS, and shadcn/ui for the frontend, with a FastAPI backend powered by PyTorch 
+                This project was developed using modern web technologies including React, TypeScript,
+                TailwindCSS, and shadcn/ui for the frontend, with a FastAPI backend powered by PyTorch
                 for deep learning inference. Authentication and storage are managed through Firebase.
               </p>
               <div className="mt-6 flex flex-wrap gap-2">

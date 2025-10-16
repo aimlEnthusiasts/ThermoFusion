@@ -4,14 +4,15 @@ import { Logo } from '@/components/Logo';
 import { ScrollProgressBar } from '@/components/ScrollProgressBar';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Upload, Zap, Download, Satellite, Github, CheckCircle, TrendingUp, Users, Shield } from 'lucide-react';
+import { Upload, Zap, Download, Satellite, Github, CheckCircle, TrendingUp, Users, Shield, Link2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import UserProfileMenu from '@/components/UserProfileMenu';
 import { StarsBackground } from '@/components/stars';
 import { useEffect, useState } from 'react';
 import { X } from "lucide-react";
-
+import ThermalVisualizationCard from '@/components/ThermalVisualizationCard';
+import ContributorsStack from '@/components/ui/ContributorsStack';
 
 export default function Landing() {
 
@@ -22,6 +23,16 @@ export default function Landing() {
 
   const handleDemoClick = () => setShowDemo(true);
   const handleCloseDemo = () => setShowDemo(false);
+
+  const contributors = [
+    { name: "Org", imageUrl: "https://avatars.githubusercontent.com/u/193256770?s=96&v=4", profileUrl: "https://github.com/aimlEnthusiasts" },
+    { name: "Yash", imageUrl: "https://avatars.githubusercontent.com/u/166858346?v=4", profileUrl: "https://yashbarai.netlify.app/" },
+    { name: "Sahil", imageUrl: "https://avatars.githubusercontent.com/u/187351491?v=4", profileUrl: "https://sahil-giri.netlify.app/" },
+    { name: "Soham", imageUrl: "https://avatars.githubusercontent.com/u/193231889?v=4", profileUrl: "https://github.com/Soham303" },
+    { name: "Alsanad", imageUrl: "https://avatars.githubusercontent.com/u/172475158?v=4", profileUrl: "https://mohammad-alsanad-sheikh-portfolio.vercel.app/" },
+    { name: "Farhan", imageUrl: "https://avatars.githubusercontent.com/u/170020578?v=4", profileUrl: "https://github.com/farhannsheikhh" },
+    { name: "Harshada", imageUrl: "https://avatars.githubusercontent.com/u/198323051?v=4", profileUrl: "https://github.com/harsha05-ui" },
+  ];
 
 
   // Ensure page starts at top on mount to prevent auto-scroll issues
@@ -72,111 +83,124 @@ export default function Landing() {
       <ScrollProgressBar />
 
       {/* Hero Section */}
-      <StarsBackground className="relative overflow-hidden min-h-screen">
+      <StarsBackground className="relative overflow-hidden min-h-screen flex items-center">
         <section className="container mx-auto px-4 py-20 md:py-32 relative">
-          {/* Animated background gradient orbs */}
-          <div className="absolute top-20 left-10 w-96 h-96 bg-white/5 rounded-full blur-3xl animate-float" />
-          <div className="absolute bottom-20 right-10 w-80 h-80 bg-accent/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-center relative z-10"
-          >
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            {/* Left Side - Text Content */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 py-2 text-sm backdrop-blur-sm shadow-lg shadow-white/10"
-            >
-              <Satellite className="h-4 w-4 text-white animate-bounce-slow" />
-              <span className="text-white/90">ISRO Super-Resolution Initiative</span>
-            </motion.div>
-
-            <motion.h1
-              className="mb-6 text-5xl font-bold md:text-7xl"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+              className="relative z-10 text-left ml-5"
+            >
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-4 py-2 text-sm backdrop-blur-sm shadow-lg shadow-white/10"
+              >
+                <Satellite className="h-4 w-4 text-white animate-bounce-slow" />
+                <span className="text-white/90">ISRO Super-Resolution Initiative</span>
+              </motion.div>
+
+              <motion.h1
+                className="mb-6 text-4xl font-bold md:text-6xl leading-tight drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.3 }}
+              >
+                <span className="text-white">
+                  Optical-Guided
+                </span>
+                <br />
+                <span className="text-white/95">
+                  Thermal Super-Resolution
+                </span>
+              </motion.h1>
+
+              <motion.p
+                className="mb-12 max-w-2xl text-lg text-muted-foreground drop-shadow-[0_0_6px_rgba(0,0,0,0.6)]"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8, delay: 0.5 }}
+              >
+                Advanced AI-powered enhancement for thermal infrared imagery using optical guidance.
+                Transform low-resolution thermal data into crystal-clear insights.
+              </motion.p>
+
+              <motion.div
+                className="flex flex-wrap gap-4"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.7 }}
+              >
+                <Link to="/dashboard">
+                  <Button size="lg" className="relative overflow-hidden group shadow-lg shadow-white/20 hover:shadow-white/30 transition-all duration-300">
+                    <span className="relative z-10">Get Started</span>
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
+                  </Button>
+                </Link>
+                <Button
+                  size="lg"
+                  variant="outline"
+                  onClick={handleDemoClick}
+                  className="border-white/20 hover:border-white/40 hover:shadow-lg hover:shadow-white/10 transition-all duration-300"
+                >
+                  View Demo
+                </Button>
+              </motion.div>
+            </motion.div>
+
+            {/* Right Side - Visualization Card */}
+            <motion.div
+              className="w-full flex justify-center md:justify-end animate-fade-in delay-300"
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
             >
-              <span className="bg-gradient-to-r from-white via-white/90 to-accent bg-clip-text text-transparent animate-shimmer bg-[length:200%_auto]">
-                Optical-Guided
-              </span>
-              <br />
-              <span className="text-white/95">Thermal Super-Resolution</span>
-            </motion.h1>
-
-            <motion.p
-              className="mx-auto mb-12 max-w-2xl text-lg text-muted-foreground"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.5 }}
-            >
-              Advanced AI-powered enhancement for thermal infrared imagery using optical guidance.
-              Transform low-resolution thermal data into crystal-clear insights.
-            </motion.p>
-
-            <motion.div
-              className="flex flex-wrap justify-center gap-4"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.7 }}
-            >
-              <Link to="/dashboard">
-                <Button size="lg" className="relative overflow-hidden group shadow-lg shadow-white/20 hover:shadow-white/30 transition-all duration-300">
-                  <span className="relative z-10">Get Started</span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
-                </Button>
-              </Link>
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={handleDemoClick}
-                className="border-white/20 hover:border-white/40 hover:shadow-lg hover:shadow-white/10 transition-all duration-300"
-              >
-                View Demo
-              </Button>
-
-              <AnimatePresence>
-                {showDemo && (
-                  <motion.div
-                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    onClick={handleCloseDemo} // 👈 closes modal on background click
-                  >
-                    <motion.div
-                      initial={{ scale: 0.9, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      exit={{ scale: 0.9, opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="relative w-full max-w-4xl aspect-video bg-black rounded-2xl shadow-xl shadow-white/10 overflow-hidden"
-                      onClick={(e) => e.stopPropagation()} // 👈 prevents closing when clicking inside video
-                    >
-                      <button
-                        onClick={handleCloseDemo}
-                        className="absolute top-3 right-3 p-2 rounded-full bg-black/40 hover:bg-black/60 text-white transition-colors"
-                      >
-                        <X className="h-6 w-6" />
-                      </button>
-                      <iframe
-                        className="w-full h-full rounded-2xl"
-                        src="https://www.youtube.com/embed/2EFcKO_lVRg?autoplay=1&rel=0"
-                        title="ThermoFusion Demo"
-                        allow="autoplay; encrypted-media; fullscreen"
-                        allowFullScreen
-                      />
-                    </motion.div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
+              <ThermalVisualizationCard />
             </motion.div>
-          </motion.div>
+          </div>
+
+          {/* Demo Modal */}
+          <AnimatePresence>
+            {showDemo && (
+              <motion.div
+                className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={handleCloseDemo}
+              >
+                <motion.div
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.9, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="relative w-full max-w-4xl aspect-video bg-black rounded-2xl shadow-xl shadow-white/10 overflow-hidden"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <button
+                    onClick={handleCloseDemo}
+                    className="absolute top-3 right-3 p-2 rounded-full bg-black/40 hover:bg-black/60 text-white transition-colors"
+                  >
+                    <X className="h-6 w-6" />
+                  </button>
+                  <iframe
+                    className="w-full h-full rounded-2xl"
+                    src="https://www.youtube.com/embed/2EFcKO_lVRg?autoplay=1&rel=0"
+                    title="ThermoFusion Demo"
+                    allow="autoplay; encrypted-media; fullscreen"
+                    allowFullScreen
+                  />
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </section>
       </StarsBackground>
+
+
 
       {/* Features Section */}
       <section id="features" className="border-y bg-secondary/50 py-20">
@@ -356,7 +380,7 @@ export default function Landing() {
               Ready to Enhance Your Thermal Imagery?
             </h2>
             <p className="mb-8 text-lg text-muted-foreground">
-              Join researchers and organizations worldwide using ThermoFusion Lab for advanced thermal super-resolution.
+              Join researchers and organizations worldwide using ThermoFusion for advanced thermal super-resolution.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               {/* COMMENTED OUT: Start Free Trial button disabled */}
@@ -383,7 +407,7 @@ export default function Landing() {
       {/* Footer */}
       <footer className="border-t bg-secondary/50">
         <div className="container mx-auto px-4 py-12">
-          <div className="grid gap-8 md:grid-cols-4">
+          <div className="grid gap-8 md:grid-cols-3">
             <div>
               <Logo className="mb-4" />
               <p className="text-sm text-muted-foreground">
@@ -391,34 +415,23 @@ export default function Landing() {
               </p>
             </div>
             <div>
-              <h3 className="mb-4 font-bold">Product</h3>
+              <h3 className="mb-4 font-bold">Quick Links</h3>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li><a href="#features" className="hover:text-foreground transition-colors">Features</a></li>
                 <li><a href="#how-it-works" className="hover:text-foreground transition-colors">How it Works</a></li>
                 <li><Link to="/help" className="hover:text-foreground transition-colors">Documentation</Link></li>
               </ul>
             </div>
-            <div>
-              <h3 className="mb-4 font-bold">Company</h3>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link to="/about" className="hover:text-foreground transition-colors">About</Link></li>
-                <li><a href="#stats" className="hover:text-foreground transition-colors">Statistics</a></li>
-                <li><Link to="/help" className="hover:text-foreground transition-colors">Support</Link></li>
-              </ul>
-            </div>
+
             <div>
               <h3 className="mb-4 font-bold">Connect</h3>
               <div className="flex gap-4">
-                <a href="https://github.com/aimlEnthusiasts/ThermoFusion" target="_blank" rel="noopener noreferrer">
-                  <Button variant="ghost" size="icon">
-                    <Github className="h-5 w-5" />
-                  </Button>
-                </a>
+                <ContributorsStack contributors={contributors} />
               </div>
             </div>
           </div>
           <div className="mt-12 border-t pt-8 text-center text-sm text-muted-foreground">
-            <p>© 2025 ISRO Super-Resolution Initiative | Built with React, FastAPI, Firebase</p>
+            <p>© 2025 ThermoFusion | Built with React, FastAPI, Firebase and ❤️</p>
           </div>
         </div>
       </footer>

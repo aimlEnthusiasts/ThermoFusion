@@ -48,12 +48,12 @@ export default function Help() {
                 <AccordionItem value="item-1">
                   <AccordionTrigger>What file formats are supported?</AccordionTrigger>
                   <AccordionContent>
-                    ThermoFusion Lab supports common image formats including JPEG, PNG, TIFF, and BMP. 
+                    ThermoFusion supports common image formats including JPEG, PNG, TIFF, and BMP.
                     For best results, we recommend using uncompressed formats like PNG or TIFF.
                     Images should ideally be between 512x512 and 4096x4096 pixels.
                   </AccordionContent>
                 </AccordionItem>
-                
+
                 <AccordionItem value="item-2">
                   <AccordionTrigger>How do I prepare my images?</AccordionTrigger>
                   <AccordionContent>
@@ -65,7 +65,7 @@ export default function Help() {
                     </ul>
                   </AccordionContent>
                 </AccordionItem>
-                
+
                 <AccordionItem value="item-3">
                   <AccordionTrigger>What do the quality metrics mean?</AccordionTrigger>
                   <AccordionContent>
@@ -76,7 +76,7 @@ export default function Help() {
                     </ul>
                   </AccordionContent>
                 </AccordionItem>
-                
+
                 <AccordionItem value="item-4">
                   <AccordionTrigger>How long does processing take?</AccordionTrigger>
                   <AccordionContent>
@@ -89,7 +89,7 @@ export default function Help() {
                     Larger images and GPU availability can affect processing time.
                   </AccordionContent>
                 </AccordionItem>
-                
+
                 <AccordionItem value="item-5">
                   <AccordionTrigger>What if my job fails?</AccordionTrigger>
                   <AccordionContent>
