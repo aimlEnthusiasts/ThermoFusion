@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Logo } from '@/components/Logo';
 import { ScrollProgressBar } from '@/components/ScrollProgressBar';
@@ -9,13 +9,20 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import UserProfileMenu from '@/components/UserProfileMenu';
 import { StarsBackground } from '@/components/stars';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { X } from "lucide-react";
 
 
 export default function Landing() {
 
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+
+  const [showDemo, setShowDemo] = useState(false);
+
+  const handleDemoClick = () => setShowDemo(true);
+  const handleCloseDemo = () => setShowDemo(false);
+
 
   // Ensure page starts at top on mount to prevent auto-scroll issues
   useEffect(() => {
@@ -122,9 +129,50 @@ export default function Landing() {
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000" />
                 </Button>
               </Link>
-              <Button size="lg" variant="outline" className="border-white/20 hover:border-white/40 hover:shadow-lg hover:shadow-white/10 transition-all duration-300">
+              <Button
+                size="lg"
+                variant="outline"
+                onClick={handleDemoClick}
+                className="border-white/20 hover:border-white/40 hover:shadow-lg hover:shadow-white/10 transition-all duration-300"
+              >
                 View Demo
               </Button>
+
+              <AnimatePresence>
+                {showDemo && (
+                  <motion.div
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    onClick={handleCloseDemo} // 👈 closes modal on background click
+                  >
+                    <motion.div
+                      initial={{ scale: 0.9, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0.9, opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="relative w-full max-w-4xl aspect-video bg-black rounded-2xl shadow-xl shadow-white/10 overflow-hidden"
+                      onClick={(e) => e.stopPropagation()} // 👈 prevents closing when clicking inside video
+                    >
+                      <button
+                        onClick={handleCloseDemo}
+                        className="absolute top-3 right-3 p-2 rounded-full bg-black/40 hover:bg-black/60 text-white transition-colors"
+                      >
+                        <X className="h-6 w-6" />
+                      </button>
+                      <iframe
+                        className="w-full h-full rounded-2xl"
+                        src="https://www.youtube.com/embed/2EFcKO_lVRg?autoplay=1&rel=0"
+                        title="ThermoFusion Demo"
+                        allow="autoplay; encrypted-media; fullscreen"
+                        allowFullScreen
+                      />
+                    </motion.div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
             </motion.div>
           </motion.div>
         </section>
