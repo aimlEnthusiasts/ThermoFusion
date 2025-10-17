@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 /* === DESIGN SYSTEM === */
 @layer base {
   :root {
@@ -50,6 +51,15 @@
   body {
     @apply bg-background text-foreground;
     font-family: 'Inter', system-ui, sans-serif;
+    scrollbar-width: none;
+    /* For Firefox */
+    -ms-overflow-style: none;
+
+  }
+
+  body::-webkit-scrollbar {
+    display: none;
+    /* For Chrome, Safari, and newer Edge */
   }
 
   h1,

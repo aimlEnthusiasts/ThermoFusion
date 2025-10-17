@@ -18,10 +18,15 @@ from ai.training import PhysicsAwareUNet
 
 app = FastAPI(title="Thermal SR Model API")
 
+origins = [
+    "https://thermofusionsih25.vercel.app",
+    "http://localhost:8080",  # for local dev
+]
+
 # ✅ Allow React frontend to access this API
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # or restrict to your Vercel domain
+    allow_origins=origins,  # or restrict to your Vercel domain
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -79,7 +84,7 @@ async def infer(file: UploadFile = File(...)):
                 optical = all_bands[1:4]
             else:
                 optical = all_bands[1:4] / 10000.0  # Bands 2-4
-            thermal = all_bands[9:11] / 300.0   # Bands 10-11
+            thermal = all_bands[9:11] / 300.0  # Bands 10-11
 
         optical_tensor = torch.tensor(optical).unsqueeze(0).to(DEVICE)
         thermal_tensor = torch.tensor(thermal).unsqueeze(0).to(DEVICE)
@@ -250,11 +255,14 @@ async def infer(file: UploadFile = File(...)):
         # Thermal RGB (pseudo color) from predicted thermal bands
         # Compose as [Band11, mean(B10,B11), Band10]
         thermal_mean = np.mean(pred_np, axis=0)
-        thermal_rgb = np.stack([
-            pred_np[1],
-            thermal_mean,
-            pred_np[0],
-        ], axis=0)
+        thermal_rgb = np.stack(
+            [
+                pred_np[1],
+                thermal_mean,
+                pred_np[0],
+            ],
+            axis=0,
+        )
         # Normalize thermal to 0..1 based on current scene range
         tmin, tmax = np.percentile(thermal_rgb, [1, 99])
         thermal_rgb = np.clip((thermal_rgb - tmin) / max(tmax - tmin, 1e-6), 0, 1)
@@ -262,8 +270,12 @@ async def infer(file: UploadFile = File(...)):
 
         # Enhance thermal intensity using CLAHE to preserve local contrast
         t_lo, t_hi = np.percentile(thermal_mean, [1, 99])
-        thermal_intensity = np.clip((thermal_mean - t_lo) / max(t_hi - t_lo, 1e-6), 0, 1)
-        thermal_intensity_eq = exposure.equalize_adapthist(thermal_intensity, clip_limit=0.01)
+        thermal_intensity = np.clip(
+            (thermal_mean - t_lo) / max(t_hi - t_lo, 1e-6), 0, 1
+        )
+        thermal_intensity_eq = exposure.equalize_adapthist(
+            thermal_intensity, clip_limit=0.01
+        )
 
         # Blend in Lab colorspace: mix thermal intensity into luminance channel
         optical_lab = color.rgb2lab(np.clip(optical_true_rgb, 0, 1))  # L in [0,100]
@@ -275,7 +287,9 @@ async def infer(file: UploadFile = File(...)):
         fused_rgb = np.clip(color.lab2rgb(optical_lab), 0, 1)
 
         # Light sharpening to counter any residual blur
-        fused_rgb = np.clip(unsharp_mask(fused_rgb, radius=1.2, amount=0.8, preserve_range=True), 0, 1)
+        fused_rgb = np.clip(
+            unsharp_mask(fused_rgb, radius=1.2, amount=0.8, preserve_range=True), 0, 1
+        )
 
         # Encode previews
         final_output_b64 = image_to_base64(fused_rgb)

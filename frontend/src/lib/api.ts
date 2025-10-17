@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { auth } from './firebase';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://thermofusion-f5jf.onrender.com';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://tesfdsdag-thermovisionbackend2.hf.space';
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,

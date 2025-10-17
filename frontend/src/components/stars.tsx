@@ -46,8 +46,19 @@ function StarLayer({
     return (
         <motion.div
             data-slot="star-layer"
-            animate={{ y: [0, -2000] }}
-            transition={transition}
+            animate={{
+                y: [0, -2000],
+                opacity: [0.8, 1, 0.8], // 👈 fade in/out
+            }}
+            transition={{
+                ...transition,
+                opacity: {
+                    duration: 5, // controls fade speed
+                    repeat: Infinity,
+                    repeatType: "mirror",
+                    ease: "easeInOut",
+                },
+            }}
             className={cn("absolute top-0 left-0 w-full h-[2000px]", className)}
             {...props}
         >
@@ -70,6 +81,7 @@ function StarLayer({
         </motion.div>
     );
 }
+
 
 type StarsBackgroundProps = React.ComponentProps<"div"> & {
     factor?: number;
