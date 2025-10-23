@@ -5,7 +5,7 @@ import { Logo } from '@/components/Logo';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/contexts/AuthContext';
-import { Plus, LogOut, Download, FileImage, BarChart3, Zap, ZoomIn, X } from 'lucide-react';
+import { Plus, LogOut, Download, FileImage, BarChart3, Zap, ZoomIn, X, Cpu } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import UserProfileMenu from '@/components/UserProfileMenu';
 
@@ -80,18 +80,26 @@ export default function Dashboard() {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-12">
-        <div className="mb-8 flex items-center justify-between">
+        <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div>
             <h1 className="mb-2 text-4xl font-bold">Dashboard</h1>
-            <p className="text-muted-foreground">Process TIF files with AI-powered thermal super-resolution</p>
+            <p className="text-muted-foreground">
+              Process TIF files with AI-powered thermal super-resolution
+            </p>
           </div>
-          <Link to="/upload">
-            <Button size="lg" className="btn-glow">
-              <Plus className="mr-2 h-5 w-5" />
-              Process TIF File
-            </Button>
-          </Link>
+
+          <div className="flex flex-wrap items-center gap-3">
+            <Link to="/tiffiles">
+              <Button size="lg" className="btn-glow">
+                <Download className="mr-2 h-5 w-5" />
+                Get Example Dataset
+              </Button>
+            </Link>
+
+
+          </div>
         </div>
+
 
         {/* AI Results Section */}
         {showResults && aiResult && (

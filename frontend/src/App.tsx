@@ -16,6 +16,7 @@ import Settings from "./pages/Settings";
 import Help from "./pages/Help";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
+import TiffViewer from "./pages/TiffViewer";
 
 
 const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ const App = () => (
             <Route path="/login" element={<Auth />} />
             <Route path="/about" element={<About />} />
             <Route path="/help" element={<Help />} />
+            <Route path="/tiffiles" element={<TiffViewer />} />
 
 
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
