@@ -12,31 +12,27 @@ AI-driven fusion pipeline that uses **high-resolution optical imagery** to **sup
 ---
 
 ## 📑 Table of Contents
-- [Project Overview](#project-overview)
-- [Highlights & Key Features](#highlights--key-features)
-- [System Architecture](#system-architecture)
-- [Getting Started](#getting-started)
+- [Project Overview](#-project-overview)
+- [Highlights & Key Features](#-highlights--key-features)
+- [System Architecture](#-system-architecture)
+- [Getting Started](#%EF%B8%8F-getting-started)
   - [Prerequisites](#prerequisites)
   - [Quick Install (Development)](#quick-install-development)
-- [Dataset & Preprocessing](#dataset--preprocessing)
-- [Co-registration & Alignment](#co-registration--alignment)
-- [Model Design](#model-design)
+- [Dataset & Preprocessing](#%EF%B8%8F-dataset--preprocessing)
+- [Co-registration & Alignment](#-co-registration--alignment)
+- [Model Design](#-model-design)
   - [Fusion Network](#fusion-network)
   - [Physics-Informed Priors](#physics-informed-priors)
-- [Training](#training)
+- [Training](#-training)
   - [Loss Functions & Metrics](#loss-functions--metrics)
   - [How to Run Training](#how-to-run-training)
-- [Inference & API (FastAPI)](#inference--api-fastapi)
+- [Inference & API (FastAPI)](#-inference--api-fastapi)
   - [Endpoints](#endpoints)
   - [Example Client Request](#example-client-request)
-- [Frontend (React)](#frontend-react)
-- [Evaluation](#evaluation)
-- [Deployment & Scalability](#deployment--scalability)
-- [Project Status & Roadmap](#project-status--roadmap)
-- [References & Related Work](#references--related-work)
-- [Contributing](#contributing)
-- [License & Contact](#license--contact)
-- [Demo / Preview](#demo--preview)
+- [Frontend (React)](#-frontend-react)
+- [Evaluation](#-evaluation)
+- [Contributing](#-contributing)
+- [License & Contact](#-license--contact)
 
 ---
 
@@ -271,5 +267,6 @@ Contributions welcome via GitHub Discussions or Pull Requests:
 License: MIT
 Team: Team J.A.R.V.I.S (ThermoFusion) — Smart India Hackathon 2025 (SIH25171)
 Contact: Project discussions on GitHub Discussions
+
 
 
